@@ -1,6 +1,6 @@
 # yeller-timbre-appender
 
-A Clojure library that integrates yellerapp.com with the Timbre logging library.
+A Clojure library that integrates [yellerapp.com](http://yellerapp.com) with the Timbre logging library.
 
 ## Installation
 
