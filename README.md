@@ -22,6 +22,9 @@ First initialize the Yeller timbre appender:
   {:token "YOUR TOKEN HERE" :environment "production"}))
 ```
 
+Note that Yeller doesn't record errors sent from the `test` or `development`
+environments.
+
 The record an exception using timbre's usual logging mechanisms:
 
 ```clojure
