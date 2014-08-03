@@ -14,7 +14,9 @@ Leiningen:
 ```clojure
 ;; setup
 (require '[yeller-timbre-appender :reload true])
-(timbre/set-config! [:appenders :yeller] (yeller-timbre-appender/make-yeller-appender {:token "YOUR TOKEN HERE" :environment "production"}))
+(timbre/set-config! [:appenders :yeller]
+  (yeller-timbre-appender/make-yeller-appender
+  {:token "YOUR TOKEN HERE" :environment "production"}))
 
 ;; recording an exception runs via timbre as usual
 (require '[taoensso.timbre :as timbre])
