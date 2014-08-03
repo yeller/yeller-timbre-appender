@@ -11,13 +11,20 @@ Leiningen:
 
 ## Usage
 
+#### Setup
+
+First initialize the Yeller timbre appender:
+
 ```clojure
-;; setup
 (require '[yeller-timbre-appender :reload true])
 (timbre/set-config! [:appenders :yeller]
   (yeller-timbre-appender/make-yeller-appender
   {:token "YOUR TOKEN HERE" :environment "production"}))
+```
 
+The record an exception using timbre's usual logging mechanisms:
+
+```clojure
 ;; recording an exception runs via timbre as usual
 (require '[taoensso.timbre :as timbre])
 (timbre/error (ex-info "woops" {:some :useful-data}))
