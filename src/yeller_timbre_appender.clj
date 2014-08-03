@@ -34,3 +34,7 @@
                  {:environment (:environment with-default "production")
                   :location (:ns args)
                   :custom-data custom-data}))))}))
+
+(comment
+  ;; for repl testing
+  (do (require '[yeller-timbre-appender :reload true]) (timbre/set-config! [:appenders :yeller] (yeller-timbre-appender/make-yeller-appender {:token "YOUR TOKEN HERE" :environment "timebre-test"})) (timbre/error (ex-info "lol" {:foo 1}))))
