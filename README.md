@@ -37,6 +37,32 @@ The Yeller appender records errors sent at the `error` and `fatal` levels. If
 you have an `ex-info` style error, it extracts the data given and sends it to
 Yeller.
 
+To attach extra information, like the url and so on, you can pass a map as the second argument to timbre's `error` call:
+
+```clojure
+(require '[taoensso.timbre :as timbre])
+(timbre/error (ex-info "woops" {:some :useful-data}) {:custom-data {:params {:user-id 1}} :url "http://example.com"})
+```
+
+For example, to use the timbre error in a ring middleware:
+
+```clojure
+(require '[taoensso.timbre :as timbre])
+
+(defn wrap-error-handling [handler]
+  (fn [req]
+    (try
+      (handler req)
+      (catch Throwable t
+        (timbre/error t {:url (:uri req)})))))
+```
+
+The map argument takes the same set of keys the yeller clojure client takes as its second argument. See the docstring on `yeller-clojure-client/report`:
+
+```clojure
+(doc yeller-clojure-client/report)
+```
+
 
 ## License
 
