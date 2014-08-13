@@ -16,16 +16,30 @@ Leiningen:
 First initialize the Yeller timbre appender:
 
 ```clojure
-(require '[yeller-timbre-appender :reload true])
+(require '[yeller-timbre-appender])
 (timbre/set-config! [:appenders :yeller]
   (yeller-timbre-appender/make-yeller-appender
-  {:token "YOUR TOKEN HERE" :environment "production"}))
+    {:token "YOUR TOKEN HERE" :environment "production"}))
 ```
 
 Note that Yeller doesn't record errors sent from the `test` or `development`
 environments.
 
-The record an exception using timbre's usual logging mechanisms:
+Also, if you have an existing Yeller client, you can pass it in with
+`:yeller/client` instead of needing a token. This is useful if you have an
+existing yeller client instance and don't want two instances of it:
+
+```clojure
+(require '[yeller-timbre-appender]
+         '[yeller-clojure-client])
+(def client (yeller-clojure-client/client {:token "YOUR TOKEN HERE" :environment "production"})
+(timbre/set-config! [:appenders :yeller]
+  (yeller-timbre-appender/make-yeller-appender
+    {:yeller/client client}))
+```
+
+Once you have the yeller timbre appender configured, record an exception using
+timbre's usual logging mechanisms:
 
 ```clojure
 ;; recording an exception runs via timbre as usual
@@ -33,9 +47,11 @@ The record an exception using timbre's usual logging mechanisms:
 (timbre/error (ex-info "woops" {:some :useful-data}))
 ```
 
-The Yeller appender records errors sent at the `error` and `fatal` levels. If
-you have an `ex-info` style error, it extracts the data given and sends it to
-Yeller.
+The Yeller appender records errors sent at the `error` and `fatal` levels by
+default. If you have an `ex-info` style error, it extracts the data given and
+sends it to Yeller.
+
+### Extra information, url, location and more
 
 To attach extra information, like the url and so on, you can pass a map as the second argument to timbre's `error` call:
 
