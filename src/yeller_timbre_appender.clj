@@ -6,10 +6,22 @@
     client
     (yeller-client/client options)))
 
-(defn extract-data [throwable]
+(defn extract-ex-data [throwable]
   (if-let [data (ex-data throwable)]
     {:ex-data data}
     {}))
+
+(defn extract-arg-data [raw-args]
+  (if (map? (first raw-args))
+    (first raw-args)
+    {}))
+
+(defn extract-data [throwable raw-args]
+  (let [arg-data (extract-arg-data raw-args)
+        ex-data (extract-ex-data throwable)]
+    (merge
+      arg-data
+      {:custom-data (merge ex-data (:custom-data arg-data {}))})))
 
 (defn make-yeller-appender
   "Create a Yeller timbre appender.
@@ -40,19 +52,21 @@
         :min-level :warn
         :enabled? true
         :async? true
+        :rate-limit nil
         :fn (fn [args]
               (let [throwable (:throwable args)
-                    custom-data (extract-data throwable)]
+                    data (extract-data throwable (:args args))]
                 (if (and (:error? args)
                          throwable)
                   (yeller-client/report
                     client
                     throwable
-                    {:environment (:environment with-default "production")
-                     :location (:ns args)
-                     :custom-data custom-data}))))}
+                    (merge {:environment (:environment with-default "production")
+                            :location (:ns args)}
+                           data)))))}
        timbre-options))))
 
 (comment
   ;; for repl testing
-  (do (require '[yeller-timbre-appender :reload true]) (timbre/set-config! [:appenders :yeller] (yeller-timbre-appender/make-yeller-appender {:token "YOUR TOKEN HERE" :environment "timebre-test"})) (timbre/error (ex-info "lol" {:foo 1}))))
+  (do (require '[taoensso.timbre :as timbre]) (require '[yeller-timbre-appender :reload true]) (timbre/set-config! [:appenders :yeller] (yeller-timbre-appender/make-yeller-appender {:token "YOUR TOKEN HERE" :environment "timbre-test"})) (dotimes [_ 1] (timbre/error (ex-info "lol" {:foo 1}) {:custom-data {:params {:user-id 1}}})))
+  )

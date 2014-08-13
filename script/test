@@ -1,0 +1,4 @@
+#!/bin/bash
+
+set -e
+grench eval "(do (require '[yeller-timbre-appender-test :reload-all true]) (clojure.test/run-all-tests #\"yeller-timbre-appender-test.*\"))"
