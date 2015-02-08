@@ -37,6 +37,8 @@
      :environment \"production\" ; the name of the environment the app runs in
   (note that exceptions reported in \"development\" or \"test\" environments
   are ignored) (defaults to \"production\"
+     :application-packages [\"com.myapp\"] : the name(s) of the root packages your
+     app runs in. Defaults to reading out of project.clj (both locally and in an uberjar settings). This lets the web ui display stacktrace lines only from the app by default (and hide those from libraries and from clojure itself).
   Optionally takes an additional map (as a first argument) which gets merged as timbre options:
   (make-yeller-appender
     {:min-level :error, :enabled? true}
