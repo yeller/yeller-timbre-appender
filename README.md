@@ -6,7 +6,7 @@ A Clojure library that integrates [yellerapp.com](http://yellerapp.com) with the
 
 Leiningen:
 ```
-[yeller-timbre-appender "0.1.0-SNAPSHOT"]
+[yeller-timbre-appender "0.4.1"]
 ```
 
 ## Usage
