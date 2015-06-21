@@ -1,6 +1,6 @@
 (ns yeller-timbre-appender-test
   (:require [clojure.test :refer :all]
-            [yeller-timbre-appender :refer :all]))
+            [yeller.timbre-appender :refer :all]))
 
 (deftest extract-data-grabs-ex-data
   (testing "it grabs ex-data if it's there"
