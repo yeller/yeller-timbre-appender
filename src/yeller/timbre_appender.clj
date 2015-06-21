@@ -1,5 +1,5 @@
 (ns yeller.timbre-appender
-  (:require [yeller-clojure-client :as yeller-client]))
+  (:require [yeller.clojure.client :as yeller-client]))
 
 (defn create-client [options]
   (if-let [client (:yeller/client options)]
@@ -12,8 +12,8 @@
     {}))
 
 (defn extract-arg-data [raw-args]
-  (if (map? (first raw-args))
-    (first raw-args)
+  (if-let [m (first (filter map? raw-args))]
+    m
     {}))
 
 (defn extract-data [throwable raw-args]
@@ -51,24 +51,23 @@
          client (create-client with-default)]
      (merge
        {:doc "A timbre appender that sends errors to yellerapp.com"
-        :min-level :warn
+        :min-level :error
         :enabled? true
         :async? true
         :rate-limit nil
         :fn (fn [args]
-              (let [throwable (:throwable args)
-                    data (extract-data throwable (:args args))]
-                (if (and (:error? args)
-                         throwable)
+              (let [throwable @(:?err_ args)
+                    data (extract-data throwable @(:vargs_ args))]
+                (when throwable
                   (yeller-client/report
                     client
                     throwable
                     (merge {:environment (:environment with-default "production")
-                            :location (:ns args)}
+                            :location (:?ns-str args)}
                            data)))))}
        timbre-options))))
 
 (comment
   ;; for repl testing
-  (do (require '[taoensso.timbre :as timbre]) (require '[yeller-timbre-appender :reload true]) (timbre/set-config! [:appenders :yeller] (yeller-timbre-appender/make-yeller-appender {:token "YOUR TOKEN HERE" :environment "timbre-test"})) (dotimes [_ 1] (timbre/error (ex-info "lol" {:foo 1}) {:custom-data {:params {:user-id 1}}})))
+  (do (require '[taoensso.timbre :as timbre]) (require '[yeller.timbre-appender :reload true]) (timbre/merge-config! {:appenders {:yeller-appender (yeller.timbre-appender/make-yeller-appender {:token "YOUR API KEY HERE" :environment "timbre-test"})}}) (dotimes [_ 1] (timbre/error (ex-info "921392813" {:foo 1}) {:custom-data {:params {:user-id 1}}})))
   )
