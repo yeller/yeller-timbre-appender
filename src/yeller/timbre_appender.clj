@@ -1,5 +1,5 @@
 (ns yeller.timbre-appender
-  (:require [yeller-clojure-client :as yeller-client]))
+  (:require [yeller.clojure.client :as yeller-client]))
 
 (defn create-client [options]
   (if-let [client (:yeller/client options)]
