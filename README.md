@@ -16,9 +16,9 @@ Leiningen:
 First initialize the Yeller timbre appender:
 
 ```clojure
-(require '[yeller-timbre-appender])
+(require '[yeller.timbre-appender])
 (timbre/set-config! [:appenders :yeller]
-  (yeller-timbre-appender/make-yeller-appender
+  (yeller.timbre-appender/make-yeller-appender
     {:token "YOUR TOKEN HERE" :environment "production"}))
 ```
 
@@ -30,9 +30,9 @@ Also, if you have an existing Yeller client, you can pass it in with
 existing yeller client instance and don't want two instances of it:
 
 ```clojure
-(require '[yeller-timbre-appender]
-         '[yeller-clojure-client])
-(def client (yeller-clojure-client/client {:token "YOUR TOKEN HERE" :environment "production"})
+(require '[yeller.timbre-appender]
+         '[yeller.clojure.client])
+(def client (yeller.clojure.client/client {:token "YOUR TOKEN HERE" :environment "production"})
 (timbre/set-config! [:appenders :yeller]
   (yeller-timbre-appender/make-yeller-appender
     {:yeller/client client}))
@@ -73,10 +73,10 @@ For example, to use the timbre error in a ring middleware:
         (timbre/error t {:url (:uri req)})))))
 ```
 
-The map argument takes the same set of keys the yeller clojure client takes as its second argument. See the docstring on `yeller-clojure-client/report`:
+The map argument takes the same set of keys the yeller clojure client takes as its second argument. See the docstring on `yeller.clojure.client/report`:
 
 ```clojure
-(doc yeller-clojure-client/report)
+(doc yeller.clojure.client/report)
 ```
 
 
