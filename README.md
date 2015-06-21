@@ -17,9 +17,11 @@ First initialize the Yeller timbre appender:
 
 ```clojure
 (require '[yeller.timbre-appender])
-(timbre/set-config! [:appenders :yeller]
-  (yeller.timbre-appender/make-yeller-appender
-    {:token "YOUR TOKEN HERE" :environment "production"}))
+(timbre/merge-config!
+  {:appenders
+    {:yeller-appender
+      (yeller.timbre-appender/make-yeller-appender
+        {:token "YOUR TOKEN HERE" :environment "production"})}})
 ```
 
 Note that Yeller doesn't record errors sent from the `test` or `development`
@@ -33,9 +35,11 @@ existing yeller client instance and don't want two instances of it:
 (require '[yeller.timbre-appender]
          '[yeller.clojure.client])
 (def client (yeller.clojure.client/client {:token "YOUR TOKEN HERE" :environment "production"})
-(timbre/set-config! [:appenders :yeller]
-  (yeller-timbre-appender/make-yeller-appender
-    {:yeller/client client}))
+(timbre/merge-config!
+  {:appenders
+    {:yeller-appender
+        (yeller-timbre-appender/make-yeller-appender
+            {:yeller/client client})}})
 ```
 
 Once you have the yeller timbre appender configured, record an exception using
@@ -82,7 +86,7 @@ The map argument takes the same set of keys the yeller clojure client takes as i
 
 ## License
 
-Copyright © 2014 Tom Crayford
+Copyright © 2014-2015 Tom Crayford
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
